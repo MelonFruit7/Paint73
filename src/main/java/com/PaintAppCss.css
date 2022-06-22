@@ -1,0 +1,29 @@
+.root {
+    -fx-background-color: #FFFFFF;
+}
+
+.button {
+    -fx-background-radius: 25px;
+    -fx-background-color: linear-gradient(to right,lightblue,lightgreen);
+
+    -fx-border-radius:25;
+    -fx-border-color:black;
+    -fx-border-width: 1 1 1 1;
+    -fx-background-insets: 0;
+}
+
+.button:pressed {
+  -fx-font-size: 12.5px;
+  -fx-background-color: linear-gradient(to right,#4499ff,lightgreen);
+}
+
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color:grey;
+    -fx-border-radius:20px; 
+    
+}
+    
+.check-box:selected .mark {
+    -fx-background-color: #5865f2;  
+}
