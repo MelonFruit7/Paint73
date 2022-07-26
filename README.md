@@ -36,12 +36,15 @@ Feature - Drawing with arrow keys
 
 Open Circle - Best used with arrow key drawing
 
+Flood - Fill any space, To toggle on and off animation (Alt + A) 
+
 ColorInput - Ability to change color of paint (using hex)
 
 Undo Button - Allows Undo up to 11 times back
 
 Feature - Edit arrow key drawing length with (Shift + M) for Minus and (Shift + P) for Plus,
           respectivly decreasing and increasing the length
+          
 
 Feature - (Alt + Y) Will draw default image (open circle off/on will change the drawing animation)
 ```
