@@ -36,7 +36,7 @@ public class PaintApp extends Application {
     int updateCounter = 0;
 
     //checks if opencircle is on or off, DevMode on or off, flood animation on/off
-    boolean keepOpenCircle = false, DevMode = false, floodAnimation = true;
+    boolean keepOpenCircle = false, DevMode = false, floodAnimation = false;
 
     //Used for the swapAnimation
     AnimationTimer timer;
@@ -230,7 +230,7 @@ public class PaintApp extends Application {
               f.fill((int)e.getX(), (int) e.getY(), (Color)abc.getStroke());
             } else {
               //Until we get out of flood mode and start drawing again we will be stuck on open circle, why? because I'm lazy
-              abc.setLineWidth(drawSize);
+              if (!openCircle.isSelected()) abc.setLineWidth(drawSize);
               abc.strokeOval(x, y, drawSize, drawSize);
             }
         });
