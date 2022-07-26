@@ -15,6 +15,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -25,16 +26,17 @@ import javafx.scene.paint.Paint;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+//Beware the code is very messy and comments aren't that helpful
 public class PaintApp extends Application {
     //coords of paint
     double x, y;
-  
+
     double slopeX, slopeY, drawSize = 5;
     //keeps check of what color we change the drawsize box to
     int updateCounter = 0;
 
-    //checks if opencircle is on or off
-    boolean keepOpenCircle = false, DevMode = false;
+    //checks if opencircle is on or off, DevMode on or off, flood animation on/off
+    boolean keepOpenCircle = false, DevMode = false, floodAnimation = true;
 
     //Used for the swapAnimation
     AnimationTimer timer;
@@ -79,29 +81,33 @@ public class PaintApp extends Application {
         CheckBox openCircle = new CheckBox("Open Circle");
         openCircle.setFocusTraversable(false);
         GridPane.setConstraints(openCircle, 3, 0);
+        //Flood Fill
+        CheckBox fillBox = new CheckBox("Flood");
+        fillBox.setFocusTraversable(false);
+        GridPane.setConstraints(fillBox, 4, 0);
         //Coloring (px) textfield
         TextField colorField = new TextField("#000000");
         colorField.setFocusTraversable(false);
         colorField.setPromptText("HEX COLOR (#334455)");
-        GridPane.setConstraints(colorField, 4, 0);
+        GridPane.setConstraints(colorField, 5, 0);
         //Undo Button
         Button undoBtn = new Button("Undo");
         undoBtn.setFocusTraversable(false);
-        GridPane.setConstraints(undoBtn, 5, 0);
+        GridPane.setConstraints(undoBtn, 6, 0);
         //Developer Box
         TextField DevBox = new TextField();
         DevBox.setFocusTraversable(false);
         DevBox.setPromptText("Dev Mode Enabled");
-        GridPane.setConstraints(DevBox, 6, 0);
+        GridPane.setConstraints(DevBox, 7, 0);
         //My label
         Label credit = new Label("Developed By MelonFruit");
-        GridPane.setConstraints(credit, 7, 0);
+        GridPane.setConstraints(credit, 8, 0);
 
  
 
         bottomlayout.getChildren().addAll(canvas);
         layout.setBottom(bottomlayout);
-        toplayout.getChildren().addAll(clearButton,eraser,sizeField,openCircle,colorField,undoBtn);
+        toplayout.getChildren().addAll(clearButton,eraser,sizeField,openCircle,colorField,undoBtn,fillBox);
         layout.setTop(toplayout);
 
      
@@ -203,7 +209,30 @@ public class PaintApp extends Application {
             x = e.getX() - drawSize / 2.0;
             y = e.getY() - drawSize / 2.0;
 
-            abc.strokeOval(x, y, drawSize, drawSize);
+            //FLOOD FILL
+            if (fillBox.isSelected() && floodAnimation) {
+              //Lookin Good
+              abc.setLineWidth(1);
+              //makin things cleaner with variables
+              WritableImage screen = canvas.snapshot(null, null);
+              //making a new FloodFill object with our graphicscontext picture of screen and exact coords
+              FloodFill f = new FloodFill(abc, screen,(int)e.getX(),(int)e.getY());
+              //calling an animation of floodFill
+              f.animateFill((Color)abc.getStroke());
+            } else if (fillBox.isSelected()) {
+              //Lookin Good
+              abc.setLineWidth(1);
+              //makin things cleaner with variables
+              WritableImage screen = canvas.snapshot(null, null);
+              //making a new FloodFill object with our graphicscontext picture of screen and exact coords
+              FloodFill f = new FloodFill(abc, screen,(int)e.getX(),(int)e.getY());
+              //calling the fill method and passing in exact coords
+              f.fill((int)e.getX(), (int) e.getY(), (Color)abc.getStroke());
+            } else {
+              //Until we get out of flood mode and start drawing again we will be stuck on open circle, why? because I'm lazy
+              abc.setLineWidth(drawSize);
+              abc.strokeOval(x, y, drawSize, drawSize);
+            }
         });
 
         //DRAWING
@@ -222,7 +251,7 @@ public class PaintApp extends Application {
                 /*
                  Since we want to plot a line of circles we want the best looking line with minimum gaps so
                  we find which slope is the greater of the 2 and set it's value to 1 as to minimize the gaps
-                 between placements of oval strokes
+               public  between placements of oval strokes
                 */
                 if (slopeX > slopeY) {
                   slopeX = 1;
@@ -254,6 +283,7 @@ public class PaintApp extends Application {
        
         KeyCombination DevModeComb = new KeyCodeCombination(KeyCode.SLASH, KeyCombination.ALT_DOWN);
         KeyCombination AnimateComb = new KeyCodeCombination(KeyCode.Y, KeyCombination.ALT_DOWN);
+        KeyCombination AnimateFloodComb = new KeyCodeCombination(KeyCode.A, KeyCombination.ALT_DOWN);
         //Secret Dev Combination
         scene.setOnKeyReleased(e -> {
           if (DevModeComb.match(e) && !DevMode) {
@@ -277,6 +307,10 @@ public class PaintApp extends Application {
              dev.animate();
              dev = null;
              System.gc();
+          }
+          //Toggle Flood animation on/off
+          if (AnimateFloodComb.match(e)) {
+            floodAnimation = !floodAnimation;
           }
         });
         //SWAP ANIMATION
