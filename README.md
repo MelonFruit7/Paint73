@@ -58,8 +58,8 @@ Feature - Input image link into Dev input and click (Alt + Y)
           
 Feature - Input a Integer as a time limit into the devbox to have randomized colors while drawing (Recommended Input 1000)
 
-//RAM Intensive
-Feature - To toggle on and off flood animation (Alt + A) 
+//The Animation is RAM Intensive
+Feature - To toggle on/off flood animation (Alt + A) 
  
 ```
 
