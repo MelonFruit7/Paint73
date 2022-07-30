@@ -36,7 +36,7 @@ Feature - Drawing with arrow keys
 
 Open Circle - Best used with arrow key drawing
 
-Flood - Fill any space, To toggle on and off animation (Alt + A) 
+Flood - Fill any space
 
 ColorInput - Ability to change color of paint (using hex)
 
@@ -52,10 +52,14 @@ Feature - (Alt + Y) Will draw default image (open circle off/on will change the 
 ```
 Dev Mode Features:
 
+//RAM Intensive
 Feature - Input image link into Dev input and click (Alt + Y) 
           to draw an image with an animation (open circle off/on will change the drawing animation)
           
 Feature - Input a Integer as a time limit into the devbox to have randomized colors while drawing (Recommended Input 1000)
+
+//RAM Intensive
+Feature - To toggle on and off flood animation (Alt + A) 
  
 ```
 
