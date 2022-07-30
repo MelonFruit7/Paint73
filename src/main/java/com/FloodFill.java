@@ -72,11 +72,11 @@ public class FloodFill extends PaintApp {
             while(queue.size() > 0) {
                 x = queue.get(queue.size() - 1)[0];
                 y = queue.get(queue.size() - 1)[1];
-                queue.remove(queue.size() - 1);
                 if (counter++ == 2500) {
                     counter = 0;
                     return;
                 }
+                queue.remove(queue.size() - 1);
                 if (x < 0 || x >= screenBounds.getWidth() || y < 0 || y >= screenBounds.getHeight() || !image.getPixelReader().getColor(x, y).equals(oldColor)) {
                     continue;
                 } else {
@@ -89,6 +89,8 @@ public class FloodFill extends PaintApp {
                 }
             }
             timer.stop();
+            //No my code's not broken you're broken ;-;
+            System.gc();
         }
     }
 }
