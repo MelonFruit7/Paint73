@@ -187,6 +187,7 @@ public class PaintApp extends Application {
         clearButton.setOnAction(e -> {
             abc.clearRect(0, 0, 5000, 5000);
             undoStack.clear();
+            //No my code's not broken you're broken ;-;
             System.gc();
         });
 
@@ -210,24 +211,26 @@ public class PaintApp extends Application {
             y = e.getY() - drawSize / 2.0;
 
             //FLOOD FILL
-            if (fillBox.isSelected() && floodAnimation) {
-              //Lookin Good
+            if (fillBox.isSelected() && floodAnimation && DevMode) {
+              //Set LineWidth to 1 to not interfere with the flood fill
               abc.setLineWidth(1);
-              //makin things cleaner with variables
+    
               WritableImage screen = canvas.snapshot(null, null);
-              //making a new FloodFill object with our graphicscontext picture of screen and exact coords
               FloodFill f = new FloodFill(abc, screen,(int)e.getX(),(int)e.getY());
               //calling an animation of floodFill
               f.animateFill((Color)abc.getStroke());
+              //No my code's not broken you're broken ;-;
+              System.gc();
             } else if (fillBox.isSelected()) {
-              //Lookin Good
+              //Set LineWidth to 1 to not interfere with the flood fill
               abc.setLineWidth(1);
-              //makin things cleaner with variables
+              
               WritableImage screen = canvas.snapshot(null, null);
-              //making a new FloodFill object with our graphicscontext picture of screen and exact coords
               FloodFill f = new FloodFill(abc, screen,(int)e.getX(),(int)e.getY());
               //calling the fill method and passing in exact coords
               f.fill((int)e.getX(), (int) e.getY(), (Color)abc.getStroke());
+              //No my code's not broken you're broken ;-;
+              System.gc();
             } else {
               //Until we get out of flood mode and start drawing again we will be stuck on open circle, why? because I'm lazy
               if (!openCircle.isSelected()) abc.setLineWidth(drawSize);
@@ -295,17 +298,20 @@ public class PaintApp extends Application {
               SecretDevAnimation dev = new SecretDevAnimation(abc, DevBox.getText(), keepOpenCircle);
               dev.animate();
               dev = null;
+              //No my code's not broken you're broken ;-;
               System.gc();
             } catch (Exception invalid) {
               SecretDevAnimation dev = new SecretDevAnimation(abc, keepOpenCircle);
               dev.animate();
               dev = null;
+              //No my code's not broken you're broken ;-;
               System.gc();
             }
           } else if (AnimateComb.match(e)) {
              SecretDevAnimation dev = new SecretDevAnimation(abc, keepOpenCircle);
              dev.animate();
              dev = null;
+             //No my code's not broken you're broken ;-;
              System.gc();
           }
           //Toggle Flood animation on/off
