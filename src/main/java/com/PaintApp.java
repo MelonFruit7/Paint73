@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -41,7 +42,7 @@ public class PaintApp extends Application {
     //Used for the swapAnimation
     AnimationTimer timer;
     //Used for the swapAnimation
-    int logger = 0;
+    boolean logger = true;
 
     //loops of how many circles placed when drawing with arrow keys
     int movement = 3;
@@ -72,42 +73,46 @@ public class PaintApp extends Application {
         CheckBox eraser = new CheckBox("Eraser");
         eraser.setFocusTraversable(false);
         GridPane.setConstraints(eraser, 1, 0);
+        //Fancy Colors CheckBox
+        CheckBox fancyColors = new CheckBox("FC");
+        fancyColors.setFocusTraversable(false);
+        GridPane.setConstraints(fancyColors, 2, 0);
         //Drawing size (px) textfield
         TextField sizeField = new TextField();
         sizeField.setPromptText("drawSize");
         sizeField.setFocusTraversable(false);
-        GridPane.setConstraints(sizeField, 2, 0);
+        GridPane.setConstraints(sizeField, 3, 0);
         //Open Circle
         CheckBox openCircle = new CheckBox("Open Circle");
         openCircle.setFocusTraversable(false);
-        GridPane.setConstraints(openCircle, 3, 0);
+        GridPane.setConstraints(openCircle, 4, 0);
         //Flood Fill
         CheckBox fillBox = new CheckBox("Flood");
         fillBox.setFocusTraversable(false);
-        GridPane.setConstraints(fillBox, 4, 0);
+        GridPane.setConstraints(fillBox, 5, 0);
         //Coloring (px) textfield
         TextField colorField = new TextField("#000000");
         colorField.setFocusTraversable(false);
         colorField.setPromptText("HEX COLOR (#334455)");
-        GridPane.setConstraints(colorField, 5, 0);
+        GridPane.setConstraints(colorField, 6, 0);
         //Undo Button
         Button undoBtn = new Button("Undo");
         undoBtn.setFocusTraversable(false);
-        GridPane.setConstraints(undoBtn, 6, 0);
+        GridPane.setConstraints(undoBtn, 7, 0);
         //Developer Box
         TextField DevBox = new TextField();
         DevBox.setFocusTraversable(false);
         DevBox.setPromptText("Dev Mode Enabled");
-        GridPane.setConstraints(DevBox, 7, 0);
+        GridPane.setConstraints(DevBox, 8, 0);
         //My label
         Label credit = new Label("Developed By MelonFruit");
-        GridPane.setConstraints(credit, 8, 0);
+        GridPane.setConstraints(credit, 9, 0);
 
  
 
         bottomlayout.getChildren().addAll(canvas);
         layout.setBottom(bottomlayout);
-        toplayout.getChildren().addAll(clearButton,eraser,sizeField,openCircle,colorField,undoBtn,fillBox);
+        toplayout.getChildren().addAll(clearButton,eraser,fancyColors,sizeField,openCircle,colorField,undoBtn,fillBox);
         layout.setTop(toplayout);
 
      
@@ -183,6 +188,13 @@ public class PaintApp extends Application {
               }
             }
         });
+        fancyColors.setOnAction(e -> {
+          if (fancyColors.isSelected()) {
+            swapAnimation(abc.getStroke());
+          } else {
+            logger = false;
+          }
+        });
         //CLEAR BUTTON
         clearButton.setOnAction(e -> {
             abc.clearRect(0, 0, 5000, 5000);
@@ -199,7 +211,9 @@ public class PaintApp extends Application {
 
         //SETING A PATH
         bottomlayout.setOnMousePressed(e -> {
-            Image image = canvas.snapshot(null, null);
+            SnapshotParameters snapParams = new SnapshotParameters();
+            snapParams.setDepthBuffer(true);;
+            Image image = canvas.snapshot(snapParams, null);
             if (undoStack.size() < 11) {
               undoStack.add(image);
             } else {
@@ -321,8 +335,7 @@ public class PaintApp extends Application {
         });
         //SWAP ANIMATION
         DevBox.setOnKeyPressed(e -> {
-          if (e.getCode() == KeyCode.ENTER && validizeInt(DevBox.getText()) && logger == 0) {
-            swapAnimation(Integer.parseInt(DevBox.getText()), abc.getStroke());
+          if (e.getCode() == KeyCode.ENTER) {
             bottomlayout.requestFocus();
           }
         });
@@ -422,23 +435,35 @@ public class PaintApp extends Application {
         return true;
     }
 
+    int[] cCodes = {255,0,0};
+    int cStep = 0;
+    int[][] cMap = {
+            {1,5},{0,-5},
+            {2,5},{1,-5},
+            {0,5},{2,-5}
+            };
     /**
      * 
      * @param time The time till the animation ends (not based on any real time system)
      * @param current The current Color of your paint so after the animation ends it can reset the color
      * @return Swaps the paints color rapidly for a set time
      */
-    public void swapAnimation(int time, Paint current) {
+    public void swapAnimation(Paint current) {
 
       timer = new AnimationTimer() {
         @Override
         public void handle(long now) {
-            if (logger++ < time) {
-             abc.setStroke(Color.rgb((int)(Math.random() * 255)
-                                    ,(int)(Math.random() * 255)
-                                    ,(int)(Math.random() * 255)));
+            if (cCodes[cMap[cStep][0]]+cMap[cStep][1]<=255 && cCodes[cMap[cStep][0]]+cMap[cStep][1]>=0) {
+              cCodes[cMap[cStep][0]] += cMap[cStep][1];
             } else {
-                logger = 0;
+              cStep = ++cStep % 6;
+            }
+            if (logger) {
+             abc.setStroke(Color.rgb(cCodes[0]
+                                    ,cCodes[1]
+                                    ,cCodes[2]));
+            } else {
+                logger = true;
                 abc.setStroke(current);
                 timer.stop();
             }
